@@ -46,6 +46,17 @@ class UserCollection {
     return UserModel.findOne({username: new RegExp(`^${username.trim()}$`, 'i')});
   }
 
+  /** (NEW)
+   * Find a username by userId.
+   *
+   * @param {string} userId - The userId of the user to find
+   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
+   */
+   static async findUsernameByUserId(userId: Types.ObjectId | string): Promise<String> {
+    const user = await UserModel.findOne({_id: userId});
+    return user.username;
+  }
+
   /**
    * Find a user by username (case insensitive).
    *

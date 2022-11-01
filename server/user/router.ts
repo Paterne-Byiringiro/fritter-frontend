@@ -27,6 +27,20 @@ router.get(
     });
   }
 );
+// get username from userId
+router.get(
+  '/usernames/:userId?',
+  [],
+  async (req: Request, res: Response) => {
+    const user = await UserCollection.findOneByUserId(req.params.userId);
+    res.status(200).json({
+      message: 'Your session info was found successfully.',
+      user: user ? util.constructUserResponse(user) : null
+    });
+  }
+);
+
+
 
 /**
  * Sign in user.

@@ -52,6 +52,7 @@
       Posted at {{ freet.dateModified }}
       <i v-if="freet.edited">(edited)</i>
     </p>
+    <CommentsPage v-bind:freetId="this.freet._id"/>
     <section class="alerts">
       <article
         v-for="(status, alert, index) in alerts"
@@ -65,8 +66,10 @@
 </template>
 
 <script>
+import CommentsPage from '@/components/Comment/CommentsPage.vue';
 export default {
   name: 'FreetComponent',
+  components: {CommentsPage},
   props: {
     // Data from the stored freet
     freet: {
