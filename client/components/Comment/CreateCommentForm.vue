@@ -38,6 +38,7 @@ export default {
 export default {
   name: 'CreateCommentForm',
   props: ['freetId'],
+  emits: ['response'],
   data() {
     return {
         content: "",
@@ -50,6 +51,7 @@ export default {
             method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify({freetId: this.freetId, content: this.content})
         };
         const r = await fetch(`/api/freets/${this.freetId}/comment`, options);
+        this.$emit('response',r)
         return r;
     }
     }
