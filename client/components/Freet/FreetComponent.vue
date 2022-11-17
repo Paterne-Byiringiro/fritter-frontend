@@ -34,6 +34,29 @@
         <button @click="deleteFreet">
           🗑️ Delete
         </button>
+      
+        <button 
+        v-if="!liked"
+        @click="likeFreet">
+        👍 {{incre}}
+        </button>
+
+        <button 
+        v-if="liked"
+        @click="likeFreet">
+         ♥️ {{incre}}
+        </button>
+
+        <button 
+        v-if="!disliked"
+        @click="dislikeFreet">
+          👎 {{decr}}
+        </button>
+        <button 
+        v-if="disliked"
+        @click="dislikeFreet">
+          DD {{decr}}
+        </button>
       </div>
     </header>
     <textarea
@@ -81,10 +104,20 @@ export default {
     return {
       editing: false, // Whether or not this freet is in edit mode
       draft: this.freet.content, // Potentially-new content for this freet
-      alerts: {} // Displays success/error messages encountered during freet modification
+      alerts: {} ,// Displays success/error messages encountered during freet modification
+      liked:false,
+      disliked: false,
+      incre : 0,
+      decr : 0
     };
   },
   methods: {
+    increment() {
+      this.incre += 1;
+    },
+    decrement() {
+      this.decr -= 1;
+    },
     startEditing() {
       /**
        * Enables edit mode on this freet.
@@ -112,6 +145,57 @@ export default {
         }
       };
       this.request(params);
+    },
+    likeFreet() {
+      /**
+       * Like this freet
+       */
+      const params = {
+        method: 'POST',
+        callback: () => {
+          this.$store.commit('alert', {
+            message: 'Successfully liked freet!', status: 'sucess'
+          });
+        }
+      };
+      if (this.liked === true) {
+        this.liked = false;
+        this.incre -= 1;
+      } else {
+        this.liked = true;
+        this.incre += 1;
+      }
+      if (this.disliked === true) {
+        this.disliked = false;
+        this.decr -= 1;
+      }
+      this.requestLike(params);
+    } ,
+    dislikeFreet() {
+      /**
+       * Dislike this freet
+       */
+       const params = {
+        method: 'POST',
+        callback: () => {
+          this.$store.commit('alert', {
+            message: 'Successfully disliked freet!', status: 'sucess'
+          });
+        }
+      };
+      if (this.disliked === true) {
+        this.disliked = false;
+        this.decr -= 1;
+      } else {
+        this.disliked = true;
+        this.decr += 1;
+      }
+      if (this.liked === true) {
+        this.liked = false;
+        this.incre -= 1;
+      }
+      this.requestDislike(params);
+
     },
     submitEdit() {
       /**
@@ -164,6 +248,67 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
+    },
+
+    async requestLike(params) {
+      /**
+       * Submits a request to the freet's endpoint
+       * @param params - Options for the request
+       * @param params.body - Body for the request, if it exists
+       * @param params.callback - Function to run if the the request succeeds
+       */
+
+       const options = {
+        method: params.method, headers: {'Content-Type': 'application/json'}
+      };
+      if (params.body) {
+        options.body = params.body;
+      }
+      try {
+        //   '/:freetId?/like'
+        const r = await fetch(`/api/freets/${this.freet._id}/like`, options);
+        if (!r.ok) {
+          const res = await r.json();
+          throw new Error(res.error);
+        }
+        this.$store.commit('refreshFreets');
+
+        params.callback();
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$likeFreet(this.alerts, e), 3000);
+      }
+
+    },
+    async requestDislike(params) {
+      /**
+       * Submits a request to the freet's endpoint
+       * @param params - Options for the request
+       * @param params.body - Body for the request, if it exists
+       * @param params.callback - Function to run if the the request succeeds
+       */
+
+       const options = {
+        method: params.method, headers: {'Content-Type': 'application/json'}
+      };
+      if (params.body) {
+        options.body = params.body;
+      }
+      try {
+        //   '/:freetId?/like'
+        const r = await fetch(`/api/freets/${this.freet._id}/dislike`, options);
+        if (!r.ok) {
+          const res = await r.json();
+          throw new Error(res.error);
+        }
+        this.$store.commit('refreshFreets');
+
+        params.callback();
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$likeFreet(this.alerts, e), 3000);
+      }
+
     }
   }
 };
