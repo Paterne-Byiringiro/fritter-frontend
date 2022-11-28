@@ -3,7 +3,7 @@ import express from 'express';
 import LikeCollection from './collections';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
-import * as util from './util';
+//import * as util from './util';
 
 const router = express.Router();
 
@@ -33,8 +33,8 @@ const router = express.Router();
       
       
         const allLikes = await LikeCollection.findAllByAuthorId(req.query.authorId as string, false);  // I may need to change something
-        const response = allLikes.map(util.constructLikeResponse);
-        res.status(200).json(response);
+        //const response = allLikes.map(util.constructLikeResponse);
+        res.status(200).json(allLikes);
  
     } else if (req.query.freetId !== undefined) {
      
@@ -44,9 +44,9 @@ const router = express.Router();
 
     } else {
      
-        const allLikes = await LikeCollection.findAll(false);
-        const response = allLikes.map(util.constructLikeResponse);
-        res.status(200).json(response);
+        const allLikes = await LikeCollection.findAll();
+        //const response = allLikes.map(util.constructLikeResponse);
+        res.status(200).json(allLikes);
         }
 
     }
@@ -61,8 +61,8 @@ router.get(
       
       
         const allLikes = await LikeCollection.findAllByAuthorId(req.query.authorId as string, true);  // I may need to change something
-        const response = allLikes.map(util.constructLikeResponse);
-        res.status(200).json(response);
+        //const response = allLikes.map(util.constructLikeResponse);
+        res.status(200).json(allLikes);
  
     } else if (req.query.freetId !== undefined) {
      
@@ -72,9 +72,9 @@ router.get(
 
     } else {
      
-        const allLikes = await LikeCollection.findAll(true);
-        const response = allLikes.map(util.constructLikeResponse);
-        res.status(200).json(response);
+        const allLikes = await LikeCollection.findAll();
+        //const response = allLikes.map(util.constructLikeResponse);
+        res.status(200).json(allLikes);
         }
 
     }
@@ -103,7 +103,10 @@ router.get(
  * @return {LikeResponse} - The created like
  * @throws {403} - If the user is not logged in
  * 
+ *
  */
+
+//commented
 router.post(
   '/:freetId?/like',
   [
@@ -116,7 +119,7 @@ router.post(
 
     res.status(201).json({
       message: 'Your like was created successfully.',
-      like: util.constructLikeResponse(like)
+      like: like
     });
   }
 );
@@ -134,14 +137,54 @@ router.post(
 
     res.status(201).json({
       message: 'Your dislike was created successfully.',
-      like: util.constructLikeResponse(dislike)
+      like: dislike
     });
+  }
+);
+
+
+//Added this functionality
+////
+
+
+// Get Like Id
+router.get(
+  '/:freetId?/likeId',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const like = await LikeCollection.findOneLike(req.params.freetId, userId);
+    const likeId = like._id;
+    res.status(201).json(likeId);
   }
 );
 
 
 ////
 ////
+/**
+ * Delete all likes for a freet
+ *
+ * @name DELETE /api/likes
+ *
+ * @param {string} freetId - The id of a freet
+ * @return {string} - A success message
+ * 
+ */
+ router.delete(
+  '/likes/delete/:freetId?',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    await LikeCollection.deleteManyByFreetId(req.params.freetId);
+    res.status(200).json({
+      message: 'You deleted all likes from the freet successfully.',
+    });
+  }
+);
 
 ////
 
@@ -180,6 +223,8 @@ router.delete(
     });
   }
 );
+
+
 
 
 

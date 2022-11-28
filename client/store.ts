@@ -12,8 +12,11 @@ const store = new Vuex.Store({
     filter: null, // Username to filter shown freets by (null = show all)
     freets: [], // All freets created in the app
     comments: [], // Added
+    likes: [],
+    favorites: [],
     username: null, // Username of the logged in user
-    alerts: {} // global success/error messages encountered during submissions to non-visible forms
+    userId: null,
+    alerts: {} ,// global success/error messages encountered during submissions to non-visible forms
   },
   mutations: {
     alert(state, payload) {
@@ -32,6 +35,9 @@ const store = new Vuex.Store({
        */
       state.username = username;
     },
+    setLikes(state, likes){
+      state.likes = likes;
+    },
     updateFilter(state, filter) {
       /**
        * Update the stored freets filter to the specified one.
@@ -46,6 +52,9 @@ const store = new Vuex.Store({
        */
       state.freets = freets;
     },
+    updateLikes(state, likes) {
+      state.likes = likes;
+    },
     async refreshFreets(state) {
       /**
        * Request the server for the currently available freets.
@@ -54,6 +63,20 @@ const store = new Vuex.Store({
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
     },
+    addFavorite(state,name,url) {
+      console.log({name,url});
+      //console.log("Byeeeee")
+      state.favorites.push({"name": name, "url": url })
+      console.log(state.favorites);
+
+    },
+    // it's okay to have any type
+    removeFavorite(favorite) {
+      this.favorites = this.favorites.filter((t) => t !== favorite)
+    },
+    async refreshLikes(state) {
+      // Will do something on itt
+    }
 
   },
   // Store data across page refreshes, only discard on browser close

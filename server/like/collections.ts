@@ -26,15 +26,16 @@ class LikeCollection {
    * @return {Promise<HydratedDocument<Like>>} - The newly created like
    */
   static async addOne(authorId: Types.ObjectId | string, freetId_: Freet, dislike_: boolean): Promise<HydratedDocument<Like>>  {
-    const ifLikeExist = await LikeModel.findOne({authorId,freetId_, dislike_});
-    const oppositeLike = ! dislike_;
+    const ifLikeExist = await LikeModel.findOne({authorId,freetId_,dislike_});
+    const oppositeLike = !dislike_;
     const ifOppositeLikeExist = await LikeModel.findOne({authorId,freetId_, oppositeLike});
+
     if (ifLikeExist !== null) {
        await LikeModel.deleteOne({_id: ifLikeExist,dislike: dislike_});
     } 
     else {
       if (ifOppositeLikeExist !== null) {
-        await LikeModel.deleteOne({_id: ifLikeExist,dislike: oppositeLike});
+        await LikeModel.deleteOne({_id: ifLikeExist,dislike: !dislike_});
       }
     const date = new Date();
     const like = new LikeModel({
@@ -60,6 +61,16 @@ class LikeCollection {
   static async findOne(likeId: Types.ObjectId | string, dislike_: boolean): Promise<HydratedDocument<Like>> {
     return LikeModel.findOne({_id: likeId, dislike: dislike_}).populate('authorId');
   }
+
+   /**
+   * Find likeId by freetId and userId
+   *
+   * @param {string} freetId - The id of the freet to find
+   * @return {Promise<HydratedDocument<Freet>> | Promise<null> } - The freet with the given freetId, if any
+   */
+    static async findOneLike(freetId: Types.ObjectId | string, userId: Types.ObjectId | string): Promise<HydratedDocument<Like>> {
+      return LikeModel.findOne({freetId: freetId, userId: userId}).populate('authorId');
+    }
 
 
 
@@ -122,9 +133,9 @@ class LikeCollection {
    *@param {boolean} dislike_
    * @return {Promise<HydratedDocument<Like>[]>} - An array of all of the likes
    */
-  static async findAll(dislike_: boolean): Promise<Array<HydratedDocument<Like>>> {
+  static async findAll(): Promise<Array<HydratedDocument<Like>>> {
     // Retrieves likes and sorts them from most to least recent
-    return LikeModel.find({dislike: dislike_}).sort({dateModified: -1}).populate(['authorId']);   // I added something      >>>>    .populate(["authorId","likes"])
+    return LikeModel.find().sort({dateModified: -1}).populate(['authorId']);   // I added something      >>>>    .populate(["authorId","likes"])
   }
 
   /**
@@ -164,6 +175,15 @@ class LikeCollection {
   }
 
   /**
+   * Delete all the likes by the freetId
+   *
+   * @param {string} freetId - The id of freet
+   */
+ static async deleteManyByFreetId(freetId: Types.ObjectId | string): Promise<void> {
+  await LikeModel.deleteMany({freetId});
+}
+
+ /**
    * Delete all the likes by the given author
    *
    * @param {string} authorId - The id of author of likes
