@@ -21,11 +21,12 @@ class LikeCollection {
    * Add a like to the collection
    *
    * @param {string} authorId - The id of the author of the like
-   * @param {Freet} freetId - The id of the freet
+   * @param {Freet} freetId_ - The id of the freet
    * @param {boolean} dislike_ - if true it's a dislike else a like
    * @return {Promise<HydratedDocument<Like>>} - The newly created like
    */
   static async addOne(authorId: Types.ObjectId | string, freetId_: Freet, dislike_: boolean): Promise<HydratedDocument<Like>>  {
+    console.log("FREETid adding",freetId_);
     const ifLikeExist = await LikeModel.findOne({authorId,freetId_,dislike_});
     const oppositeLike = !dislike_;
     const ifOppositeLikeExist = await LikeModel.findOne({authorId,freetId_, oppositeLike});
@@ -37,10 +38,11 @@ class LikeCollection {
       if (ifOppositeLikeExist !== null) {
         await LikeModel.deleteOne({_id: ifLikeExist,dislike: !dislike_});
       }
+    
     const date = new Date();
     const like = new LikeModel({
       authorId,
-      freetId_,
+      freetId: freetId_,
       dislike: dislike_,
       dateCreated: date,
       dateModified: date
@@ -49,7 +51,7 @@ class LikeCollection {
     return like.populate('authorId');
   
   }}
-  
+
 
   /**
    * Find a like by likeId
@@ -82,7 +84,7 @@ class LikeCollection {
    */
    static async findAllByFreet(freetId_: Types.ObjectId | string, dislike_: boolean): Promise<Array<HydratedDocument<Like>>> {
     const freet = await FreetCollection.findOne(freetId_);
-    return LikeModel.find({freetId: freet._id, dislike: dislike_}).populate('freetId');
+    return LikeModel.find({freetId: freetId_, dislike: dislike_}).populate('freetId');
   }
  
 /////////////////
@@ -170,7 +172,10 @@ class LikeCollection {
    * @return {Promise<Boolean>} - true if the like has been deleted, false otherwise
    */
   static async deleteOne(likeId: Types.ObjectId | string, dislike_:boolean): Promise<boolean> {
-    const like = await LikeModel.deleteOne({_id: likeId,dislike: dislike_});
+    console.log("Deleting ")
+    console.log("like ID ", likeId)
+    console.log("disklike ", dislike_)
+    const like = await LikeModel.deleteOne({_id: likeId as string,dislike: dislike_});
     return like !== null;
   }
 

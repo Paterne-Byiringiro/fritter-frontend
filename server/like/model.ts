@@ -42,7 +42,7 @@ const LikeSchema = new Schema<Like>({
   freetId: {
     //use Types.ObjectId outside of the schema
     type: Schema.Types.ObjectId,
-    required: true,
+    required: false,
     ref: 'Freet'
   },
   //dislike

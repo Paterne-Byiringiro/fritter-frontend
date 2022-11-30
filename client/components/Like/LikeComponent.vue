@@ -17,6 +17,7 @@
     <button class="likeAndDislike" v-if="disliked" @click="dislikeFreet">
       <font-awesome-icon icon="fa-solid fa-thumbs-down" /> {{ decr }}
     </button>
+    <p>{{test}}</p>
   </div>
 </template>
 
@@ -30,34 +31,49 @@ export default {
       disliked: false,
       incre: 0,
       decr: 0,
-      test: ""
+      test: "Paterne"
     };
   },
   async created() {
     // I need to write code here to check if the like is already there when you first load/refresh a page
-    /*const options = {
+    const options = {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     };
-    const r = await fetch(`/api/freets/likes/freets/${this.freetId}`, options);
-    const re = await fetch(`/api/freets/dislikes/freets/${this.freetId}`, options);
+    const r = await fetch(`/api/freets/likes?=${this.freetId}`, options);
+    const re = await fetch(`/api/freets/dislikes?=${this.freetId}`, options);
 
     const res1 = await r.json();
     const res2 = await re.json();
-    for(const l of res.likes){
-      if(l.userId === this.$store.state.userId){
+    this.test = res1;
+    for(const l of res1){
+      if(l.authorId._id === this.$store.state.userId){
         this.liked = true;
+        this.disliked = false;
       }
     }
-    this.incre = res1.likes.length;
-    this.decre = res2.dislikes.length;*/
+    if (! this.liked) {
+      for (const d of res2) {
+      if (d.authorId._id === this.$store.state.userId) {
+        this.disliked = true;
+        this.liked = false
+      }
+    }
+
+    }
+   
+    this.incre = res1.length;
+    this.decre = res2.length;
+    //*/
   },
   methods: {
     async likeFreet() {
       /**
        * Like this freet
        */
+      console.log("this.liked",this.liked);
       if (this.liked) {
+
         this.liked = false;
         this.incre -= 1;
         //get the likeId
@@ -65,8 +81,12 @@ export default {
              method: "GET",
              headers: {'Content-Type': 'application/json'}
          };
-         let likeId = await fetch(`/api/freets/${this.freetId}/likeId`, options);
+         console.log("LIKEID");
+         let response = await fetch(`/api/freets/${this.freetId}/likeId`, options);
+         const likeId = await response.json()
+         console.log("LIKEID",likeId);
          this.test = likeId;
+
          // delete the like
         options = {
              method: "DELETE",
@@ -76,6 +96,8 @@ export default {
       } else {
         this.liked = true;
         this.incre += 1;
+        console.log("freetID", this.freetId);
+
         const options = {
             method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify({freetId: this.freetId, dislike: false})
         };
@@ -86,11 +108,32 @@ export default {
             headers: {'Content-Type': 'application/json'}
         };*/
         await fetch(`/api/freets/${this.freetId}/like`, options);
+        console.log("freetID adding ", this.freetId);
       }
-      if (this.disliked) {
+      /*if (this.disliked) {
         this.disliked = false;
+        
         this.decr -= 1;
-      }
+        
+        //Get likeId
+        let options = {
+             method: "GET",
+             headers: {'Content-Type': 'application/json'}
+         };
+         //console.log("LIKEID");
+         let response = await fetch(`/api/freets/${this.freetId}/likeId`, options);
+         const likeId = await response.json()
+         //console.log("LIKEID",likeId);
+         this.test = likeId;
+         
+         // delete the like
+        options = {
+             method: "DELETE",
+             headers: {'Content-Type': 'application/json'}
+         };
+         await fetch(`/api/freets/dislikes/${likeId}`, options);
+         
+      }*/
     },
     async dislikeFreet() {
       /**
@@ -100,6 +143,23 @@ export default {
         this.disliked = false;
         this.decr -= 1;
         //call delete dislike
+        //Get likeId
+        let options = {
+             method: "GET",
+             headers: {'Content-Type': 'application/json'}
+         };
+         //console.log("LIKEID");
+         let response = await fetch(`/api/freets/${this.freetId}/likeId`, options);
+         const likeId = await response.json()
+         //console.log("LIKEID",likeId);
+         this.test = likeId;
+         
+         // delete the dislike
+        options = {
+             method: "DELETE",
+             headers: {'Content-Type': 'application/json'}
+         };
+         await fetch(`/api/freets/dislikes/${likeId}`, options);//*/
 
         //(can do same thing I did on like)
       } else {
@@ -112,11 +172,34 @@ export default {
         };
         await fetch(`/api/freets/${this.freetId}/dislike`, options);
       }
-      if (this.liked) {
+     /*  if (this.liked) {
         this.liked = false;
         this.incre -= 1;
-        // delte a like
-      }
+        
+        // delete a like
+
+        let options = {
+             method: "GET",
+             headers: {'Content-Type': 'application/json'}
+         };
+         console.log("LIKEID");
+         let response = await fetch(`/api/freets/${this.freetId}/likeId`, options);
+         const likeId = await response.json()
+         console.log("LIKEID",likeId);
+         this.test = likeId;
+         
+
+         // delete the like
+        options = {
+             method: "DELETE",
+             headers: {'Content-Type': 'application/json'}
+         };
+         await fetch(`/api/freets/likes/${likeId}`, options);
+         
+
+         
+      } */
+
      
     },
   },

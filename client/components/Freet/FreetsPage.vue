@@ -43,11 +43,15 @@
       <section
         v-if="$store.state.freets.length"
       >
+      <div class="reverseOrder">
         <FreetComponent
           v-for="freet in $store.state.freets"
           :key="freet.id"
           :freet="freet"
         />
+
+      </div>
+       
       </section>
       <article
         v-else
@@ -78,6 +82,11 @@ section {
   flex-direction: column;
 }
 
+.reverseOrder {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
 header, header > * {
     display: flex;
     justify-content: space-between;
@@ -94,3 +103,4 @@ section .scrollbox {
   overflow-y: scroll;
 }
 </style>
+

@@ -10,7 +10,7 @@
             <label for="url">URL:</label>
             <textarea v-model="url" id="url"></textarea>
           </div>
-          <button @click = "createFavorite()">Create a favorite</button>
+          <button class="button-4" @click = "createFavorite()">Create a favorite</button>
           
         </form>
 </template>
@@ -54,7 +54,8 @@ export default {
         //const url1 = this.url.trim();
         if (this.name && this.url) {
           //console.log({"name":this.name, "url":this.url});
-          this.$store.commit("addFavorite",this.name,this.url);
+          const new_dict = {"name": this.name, "url":this.url};
+          this.$store.commit("addFavorite",new_dict);
           this.$store.commit("alert", {
             message: `Made favorite item with content: ${this.name}`,
             status: "success",
@@ -78,8 +79,11 @@ export default {
 </script>
 
 <style scoped>
+@import "/components/globalCss.css";
 .contentArea{
     display: flex;
     flex-direction: column;
 }
+
 </style>
+

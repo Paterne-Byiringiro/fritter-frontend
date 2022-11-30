@@ -191,5 +191,8 @@ export default {
     border: 1px solid #111;
     padding: 20px;
     position: relative;
+    border-radius: 15px;
+    margin: 5px;
+    background-color:rgb(210, 203, 203);
 }
 </style>

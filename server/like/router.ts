@@ -29,17 +29,11 @@ const router = express.Router();
   '/likes',
   async (req: Request, res: Response, next: NextFunction) => {
     // Check if authorId query parameter was supplied
-    if (req.query.authorId !== undefined)  {
-      
-      
-        const allLikes = await LikeCollection.findAllByAuthorId(req.query.authorId as string, false);  // I may need to change something
-        //const response = allLikes.map(util.constructLikeResponse);
-        res.status(200).json(allLikes);
- 
-    } else if (req.query.freetId !== undefined) {
+    
+    if (req.query.freetId !== undefined) {
      
         const likes = await LikeCollection.findAllByFreet(req.query.freetId as string, false);
-        res.status(200).json(likes);
+        res.status(200).json(-1);
     
 
     } else {
@@ -57,14 +51,9 @@ router.get(
   '/dislikes',
   async (req: Request, res: Response, next: NextFunction) => {
     // Check if authorId query parameter was supplied
-    if (req.query.authorId !== undefined)  {
-      
-      
-        const allLikes = await LikeCollection.findAllByAuthorId(req.query.authorId as string, true);  // I may need to change something
-        //const response = allLikes.map(util.constructLikeResponse);
-        res.status(200).json(allLikes);
+   
  
-    } else if (req.query.freetId !== undefined) {
+    if (req.query.freetId !== undefined) {
      
         const likes = await LikeCollection.findAllByFreet(req.query.freetId as string, true);
         res.status(200).json(likes);

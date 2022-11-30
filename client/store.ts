@@ -63,19 +63,24 @@ const store = new Vuex.Store({
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
     },
-    addFavorite(state,name,url) {
-      console.log({name,url});
+    addFavorite(state,my_dict) {
+      //console.log({"name":my_dict["name"],"url":my_dict["url"]});
       //console.log("Byeeeee")
-      state.favorites.push({"name": name, "url": url })
+      state.favorites.push({"name": my_dict["name"], "url": my_dict["url"] })
       console.log(state.favorites);
 
     },
     // it's okay to have any type
-    removeFavorite(favorite) {
-      this.favorites = this.favorites.filter((t) => t !== favorite)
+    removeFavorite(state, favorite) {
+      console.log("NOOOOOOOO");
+      state.favorites = state.favorites.filter((t) => t !== favorite);
     },
     async refreshLikes(state) {
       // Will do something on itt
+    },
+    setUserId(state,userId) {
+      state.userId = userId;
+
     }
 
   },

@@ -62,7 +62,8 @@ export default {
       setUsername: false, // Whether or not stored username should be updated after form submission
       refreshFreets: false, // Whether or not stored freets should be updated after form submission
       alerts: {}, // Displays success/error messages encountered during form submission
-      callback: null // Function to run after successful form submission
+      callback: null ,// Function to run after successful form submission
+      //message: "What is happening??"
     };
   },
   methods: {
@@ -117,6 +118,8 @@ export default {
 </script>
 
 <style scoped>
+
+@import "/components/globalCss.css";
 form {
   border: 1px solid #111;
   padding: 0.5rem;
@@ -149,4 +152,5 @@ textarea {
    font-family: inherit;
    font-size: inherit;
 }
+
 </style>

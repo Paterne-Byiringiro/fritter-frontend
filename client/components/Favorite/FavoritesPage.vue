@@ -7,10 +7,8 @@
 
       <ol>
         
-    
-       
-        <div  v-for="item in test">
-         <!-- <div  v-for="item in $store.state.favorites"> -->
+         <div  v-for="item in $store.state.favorites"> 
+          <!--
           <p>{{item}}</p>
 
           <p>{{item["name"]}}</p>
@@ -18,12 +16,15 @@
           <P></P>
 
           <p>{{item["url"]}}</p>
-        
+
+          -->
+       
           
           <a :href="item['url']"><p>{{item["name"]}}</p></a>
+          <button class="button-4" @click="$store.commit('removeFavorite',item)">X</button>
+    
           
         
-          
           
           
         </div>
@@ -52,7 +53,6 @@ export default {
   data(){
     return{
       items: this.$store.state.todos,
-      test1: [],
       test: [{"name":"Google", "url":"https://www.google.com/"},
     {"name":"BBC", "url":"https://www.bbc.com/news"}],
     
@@ -62,4 +62,11 @@ export default {
   
 };
 
+
 </script>
+
+<style scoped>
+@import "/components/globalCss.css";
+
+</style>
+

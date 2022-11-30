@@ -45,6 +45,7 @@ export default {
 </script>
 
 <style scoped>
+@import "/components/globalCss.css";
 form {
     display: flex;
     position: relative;
