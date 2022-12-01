@@ -2,9 +2,10 @@
 
 <template>
     <article>
-        <CreateCommentForm v-bind:freetId="this.freetId"/>
+        <CreateCommentForm v-bind:freetId="this.freetId" @updateComments="this.refreshComments"/>
         <CommentComponent v-if="!noComments"
         v-for="comment in this.comments"
+        :key="comment.id"
         :authorId="comment.authorId"
         :content="comment.content"/>
         <p v-if="noComments">no comments</p>
@@ -24,6 +25,26 @@ export default {
     return{
         noComments: true,
         comments: "",
+    }
+  },
+
+
+  methods: {
+    async refreshComments(){
+      console.log("refresh comments called")
+      const options = {
+        method: "GET", headers: {'Content-Type': 'application/json'}
+    };
+    const r = await fetch(`/api/freets/comments/?freetId=${this.freetId}`, options);
+    const res = await r.json();
+    if(res.length > 0){
+        this.comments = res;
+        this.noComments = false;
+    }
+    else{
+        this.noComments = true;
+    }
+
     }
   },
 

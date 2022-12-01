@@ -27,18 +27,7 @@ class LikeCollection {
    */
   static async addOne(authorId: Types.ObjectId | string, freetId_: Freet, dislike_: boolean): Promise<HydratedDocument<Like>>  {
     console.log("FREETid adding",freetId_);
-    const ifLikeExist = await LikeModel.findOne({authorId,freetId_,dislike_});
-    const oppositeLike = !dislike_;
-    const ifOppositeLikeExist = await LikeModel.findOne({authorId,freetId_, oppositeLike});
-
-    if (ifLikeExist !== null) {
-       await LikeModel.deleteOne({_id: ifLikeExist,dislike: dislike_});
-    } 
-    else {
-      if (ifOppositeLikeExist !== null) {
-        await LikeModel.deleteOne({_id: ifLikeExist,dislike: !dislike_});
-      }
-    
+   
     const date = new Date();
     const like = new LikeModel({
       authorId,
@@ -50,7 +39,7 @@ class LikeCollection {
     await like.save(); // Saves like to MongoDB
     return like.populate('authorId');
   
-  }}
+  }
 
 
   /**
@@ -74,6 +63,18 @@ class LikeCollection {
       return LikeModel.findOne({freetId: freetId, userId: userId}).populate('authorId');
     }
 
+    /**
+   * Find dislikeId by freetId and userId
+   *
+   * @param {string} freetId - The id of the freet to find
+   * @return {Promise<HydratedDocument<Freet>> | Promise<null> } - The freet with the given freetId, if any
+   */
+     static async findOneDislike(freetId: Types.ObjectId | string, userId: Types.ObjectId | string): Promise<HydratedDocument<Like>> {
+      return LikeModel.findOne({freetId: freetId, userId: userId}).populate('authorId');
+    }
+
+
+
 
 
   /**
@@ -83,8 +84,7 @@ class LikeCollection {
    * @return {Promise<HydratedDocument<Like>[]>} - An array of all of the likes
    */
    static async findAllByFreet(freetId_: Types.ObjectId | string, dislike_: boolean): Promise<Array<HydratedDocument<Like>>> {
-    const freet = await FreetCollection.findOne(freetId_);
-    return LikeModel.find({freetId: freetId_, dislike: dislike_}).populate('freetId');
+    return LikeModel.find({freetId: freetId_, dislike: dislike_}).populate('freetId').populate(['authorId']);
   }
  
 /////////////////

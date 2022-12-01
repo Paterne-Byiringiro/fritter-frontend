@@ -193,6 +193,6 @@ export default {
     position: relative;
     border-radius: 15px;
     margin: 5px;
-    background-color:rgb(210, 203, 203);
+    background-color:rgb(209, 218, 240);
 }
 </style>

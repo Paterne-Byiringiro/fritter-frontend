@@ -49,7 +49,7 @@
 <style scoped>
 nav {
     padding: 1vw 2vw;
-    background-color: #ccc;
+    background-color: rgb(194, 197, 199);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -59,6 +59,7 @@ nav {
 .title {
     font-size: 32px;
     margin: 0 5px;
+    color: blue
 }
 
 img {
@@ -71,7 +72,7 @@ img {
 }
 
 .right {
-    font-size: 20px;
+    font-size: 27px;
     display: grid;
     gap: 16px;
     grid-auto-flow: column;

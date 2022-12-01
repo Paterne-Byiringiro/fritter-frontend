@@ -26,14 +26,17 @@ const router = express.Router();
  *
  */
  router.get(
-  '/likes',
+  '/likes/:freetId?',
   async (req: Request, res: Response, next: NextFunction) => {
     // Check if authorId query parameter was supplied
+    console.log("Querry FreetId", req.params.freetId);
+    console.log(req.params);
     
-    if (req.query.freetId !== undefined) {
+    if (req.params.freetId !== undefined) {
      
-        const likes = await LikeCollection.findAllByFreet(req.query.freetId as string, false);
-        res.status(200).json(-1);
+        const likes = await LikeCollection.findAllByFreet(req.params.freetId as string, false);
+        res.status(200).json(likes);
+
     
 
     } else {

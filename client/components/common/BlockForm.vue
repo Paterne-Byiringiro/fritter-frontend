@@ -12,7 +12,7 @@
         :key="field.id"
       >
         <label :for="field.id">{{ field.label }}:</label>
-        <textarea
+        <textarea :placeholder=note
           v-if="field.id === 'content'"
           :name="field.id"
           :value="field.value"
@@ -30,7 +30,7 @@
     <article v-else>
       <p>{{ content }}</p>
     </article>
-    <button
+    <button class="new"
       type="submit"
     >
       {{ title }}
@@ -63,7 +63,7 @@ export default {
       refreshFreets: false, // Whether or not stored freets should be updated after form submission
       alerts: {}, // Displays success/error messages encountered during form submission
       callback: null ,// Function to run after successful form submission
-      //message: "What is happening??"
+      note: "What's happening?"
     };
   },
   methods: {
@@ -119,7 +119,6 @@ export default {
 
 <style scoped>
 
-@import "/components/globalCss.css";
 form {
   border: 1px solid #111;
   padding: 0.5rem;
@@ -151,6 +150,10 @@ form h3 {
 textarea {
    font-family: inherit;
    font-size: inherit;
+}
+
+new {
+  background-color: blue
 }
 
 </style>
